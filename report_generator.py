@@ -28,7 +28,7 @@ class StockReport(FPDF):
     def header(self):
         self.set_font("Helvetica", "B", 14)
         self.set_text_color(0, 180, 120)
-        self.cell(0, 10, f"Stock Market Prediction PRO - {self.ticker}", align="C", new_x="LMARGIN", new_y="NEXT")
+        self.cell(0, 10, f"Stock Sense - {self.ticker}", align="C", new_x="LMARGIN", new_y="NEXT")
         self.set_font("Helvetica", "", 9)
         self.set_text_color(120, 120, 120)
         self.cell(0, 6, f"Report period: {self.start} to {self.end}", align="C", new_x="LMARGIN", new_y="NEXT")

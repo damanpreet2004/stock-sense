@@ -123,11 +123,12 @@ def fetch_news_newsapi(ticker: str, api_key: str) -> list[dict]:
     """Fallback: fetch via NewsAPI (requires a free API key)."""
     try:
         import requests
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
         url = (
             f"https://newsapi.org/v2/everything"
             f"?q={ticker}&sortBy=publishedAt&pageSize=20&apiKey={api_key}"
         )
-        resp = requests.get(url, timeout=10)
+        resp = requests.get(url, headers=headers, timeout=10)
         resp.raise_for_status()
         articles = resp.json().get("articles", [])
         results = []
@@ -139,7 +140,8 @@ def fetch_news_newsapi(ticker: str, api_key: str) -> list[dict]:
                 "published": (a.get("publishedAt") or "")[:16],
             })
         return results
-    except Exception:
+    except Exception as exc:
+        st.warning(f"NewsAPI fetch failed: {exc}")
         return []
 
 
@@ -161,8 +163,9 @@ def analyse_sentiment(
         mean_compound, positive_pct, negative_pct, neutral_pct, total
     """
     headlines = fetch_news_yfinance(ticker)
-    if len(headlines) < 3 and newsapi_key:
-        headlines += fetch_news_newsapi(ticker, newsapi_key)
+    api_key_clean = newsapi_key.strip() if newsapi_key else ""
+    if len(headlines) < 3 and api_key_clean:
+        headlines += fetch_news_newsapi(ticker, api_key_clean)
     if not headlines:
         return pd.DataFrame(), {}
 

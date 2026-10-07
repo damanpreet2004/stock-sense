@@ -120,11 +120,15 @@ def train_models(ticker: str, start_str: str, end_str: str, horizon: int,
 
     def _metrics(model, X_t, y_t):
         pred = model.predict(X_t)
+        mape = np.mean(np.abs((y_t - pred) / y_t)) * 100
+        accuracy_pct = max(0.0, round(100.0 - mape, 2))
         return {
-            "MAE":  round(mean_absolute_error(y_t, pred), 4),
-            "RMSE": round(np.sqrt(mean_squared_error(y_t, pred)), 4),
-            "R2":   round(r2_score(y_t, pred), 4),
-            "pred": pred,
+            "MAE":          round(mean_absolute_error(y_t, pred), 4),
+            "RMSE":         round(np.sqrt(mean_squared_error(y_t, pred)), 4),
+            "MAPE":         round(mape, 2),
+            "Accuracy_pct": accuracy_pct,
+            "R2":           round(r2_score(y_t, pred), 4),
+            "pred":         pred,
         }
 
     metrics = {

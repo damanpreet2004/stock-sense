@@ -1,2 +1,4 @@
-./myenv
-./CODE.zip
+myenv/
+CODE.zip
+**/__pycache__/
+*.pyc
